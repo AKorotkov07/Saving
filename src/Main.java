@@ -49,8 +49,8 @@ public class Main {
                 }
 
                 fis.close();
-                zos.closeEntry();
             }
+            zos.closeEntry();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +60,7 @@ public class Main {
         File[] saveGameFiles = new File("C:\\Users\\ЧПУ Программист\\Desktop\\Games2\\savegames").listFiles();
         if (saveGameFiles != null) {
             for (File file : saveGameFiles) {
-                if (!files.contains(file.getAbsolutePath())) {
+                if (!files.contains(file.getAbsolutePath()) && !file.isDirectory()) {
                     file.delete();
                 }
             }
