@@ -37,22 +37,20 @@ public class Main {
         try (FileOutputStream fos = new FileOutputStream(zipFilePath);
              ZipOutputStream zos = new ZipOutputStream(fos)) {
             for (String filePath : files) {
-                File file = new File(filePath);
-                FileInputStream fis = new FileInputStream(file);
-                ZipEntry zipEntry = new ZipEntry(file.getName());
-                zos.putNextEntry(zipEntry);
-
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = fis.read(buffer)) > 0) {
-                    zos.write(buffer, 0, len);
+                try (FileInputStream fis = new FileInputStream(filePath)) {
+                    ZipEntry zipEntry = new ZipEntry(filePath);
+                    zos.putNextEntry(zipEntry);
+                    byte[] buffer = new byte[fis.available()];
+                    fis.read(buffer);
+                    zos.write(buffer);
+                    zos.closeEntry();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-
-                fis.close();
             }
-            zos.closeEntry();
+            zos.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
